@@ -1,12 +1,17 @@
 # go-builder
 Easily build Go applications to multiple platforms with one command
 
+## How it works
+go-builder simply sets the adequate environment variables and executes the `go build` command for each specified platform/architecture.
+
+Here's an example of go-builder in action: https://asciinema.org/a/369411
+
 ## Usage
-`./go-builder -s <source.go> -o <bin/output_%> -t <win64[,lin386[,linarm64]]>`
+`./go-builder -s <source.go> -o <output_%> -t <win64[,lin386[,linarm64]]>`
 
-It is recommended to use a period (`.`) on `-s` for building with all .go files.
+You can use source files from another directory: `-s ../src/main.go`. You can also build into another directory: `-o bin/app_%`
 
-Output must contain the `%` character, which will be replaced with the target OS and Arch in the format `os-arch`.
+Output must contain the `%` character, which will be replaced with the target OS and architecture in the format `os-arch`.
 
 If the target OS is `windows`, the file name will be automatically suffixed with `.exe`.
 
