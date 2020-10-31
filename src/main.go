@@ -74,6 +74,7 @@ var (
 )
 
 func main() {
+	fmt.Println("go-builder v1.1 by github.com/NinoM4ster" + "\n")
 	flag.StringVar(&targetsFlag, "t", "", "Target platforms: <win64[,lin386[,linarm64]]>")
 	flag.StringVar(&source, "s", "", "Source: <main.go>")
 	flag.StringVar(&output, "o", "", "Output: <bin/MyApp_%>")
@@ -86,7 +87,6 @@ func main() {
 		fmt.Println("Output must contain % for replacing it with platform and arch.")
 		os.Exit(1)
 	}
-
 	targets = strings.Split(targetsFlag, ",")
 	for _, a := range targets {
 		goos, goarch, err := fetchOsArch(a)
@@ -96,14 +96,18 @@ func main() {
 		}
 		err = build(goos, goarch, source, strings.ReplaceAll(output, "%", goos+"-"+goarch))
 		if err != nil {
-			fmt.Print(err)
+			fmt.Println("\nError when compiling.", err)
 			os.Exit(2)
 		}
 	}
+	fmt.Println("\nBuilding complete!")
 }
 
 func build(goos, goarch, source, output string) error {
-	fmt.Println("Building '" + source + "' into '" + output + "' for " + goos + "/" + goarch)
+	if goos == "windows" {
+		output = output + ".exe"
+	}
+	fmt.Print("Building '" + source + "' into '" + output + "'...")
 	err := os.Setenv("GOOS", goos)
 	if err != nil {
 		return err
@@ -112,13 +116,11 @@ func build(goos, goarch, source, output string) error {
 	if err != nil {
 		return err
 	}
-	if goos == "windows" {
-		output = output + ".exe"
-	}
 	err = exec.Command("go", "build", "-o", output, source).Run()
 	if err != nil {
 		return err
 	}
+	fmt.Println(" done!")
 	return nil
 }
 
