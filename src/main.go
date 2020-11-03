@@ -116,9 +116,9 @@ func build(goos, goarch, source, output string) error {
 	if err != nil {
 		return err
 	}
-	err = exec.Command("go", "build", "-o", output, source).Run()
+	cmdOutput, err := exec.Command("go", "build", "-o", output, source).CombinedOutput()
 	if err != nil {
-		return err
+		return errors.New(err.Error() + "\n" + string(cmdOutput))
 	}
 	fmt.Println(" done!")
 	return nil
